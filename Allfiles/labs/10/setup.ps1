@@ -127,9 +127,11 @@ $Region = $locations.Location
         }
     }
 }
-$tags= @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
-New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag $tags | Out-Null
+New-AzResourceGroup -Name $resourceGroupName -Location $Region | Out-Null
+$tags =  @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'}
+$resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
+New-AzTag -ResourceId $resourceGroup.ResourceId -tag $tags
 
 # Create Synapse workspace
 $synapseWorkspace = "synapse$suffix"
@@ -138,7 +140,6 @@ $sqlDatabaseName = "sql$suffix"
 
 write-host "Creating $synapseWorkspace Synapse Analytics workspace in $resourceGroupName resource group..."
 write-host "(This may take some time!)"
-$tags= @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -TemplateFile "setup.json" `
   -Mode Complete `
@@ -149,7 +150,6 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -sqlUser $sqlUser `
   -sqlPassword $sqlPassword `
   -Force
-  -Tag $tags
 
 # Make the current user and the Synapse service principal owners of the data lake blob store
 write-host "Granting permissions on the $dataLakeAccountName storage account..."
@@ -166,7 +166,7 @@ sqlcmd -S "$synapseWorkspace.sql.azuresynapse.net" -U $sqlUser -P $sqlPassword -
 
 # Upload files
 write-host "Uploading files..."
-$storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName -Tag $tags
+$storageAccount = Get-AzStorageAccount -ResourceGroupName $resourceGroupName -Name $dataLakeAccountName
 $storageContext = $storageAccount.Context
 Get-ChildItem "./data/*.csv" -File | Foreach-Object {
     write-host ""
