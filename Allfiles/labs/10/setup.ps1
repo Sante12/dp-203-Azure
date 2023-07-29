@@ -127,7 +127,7 @@ $Region = $locations.Location
         }
     }
 }
-$tags @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
+$tags= @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
 New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag $tags | Out-Null
 
@@ -138,7 +138,7 @@ $sqlDatabaseName = "sql$suffix"
 
 write-host "Creating $synapseWorkspace Synapse Analytics workspace in $resourceGroupName resource group..."
 write-host "(This may take some time!)"
-$tags @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
+$tags= @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
 New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -TemplateFile "setup.json" `
   -Mode Complete `
