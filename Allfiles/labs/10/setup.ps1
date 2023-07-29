@@ -129,7 +129,7 @@ $Region = $locations.Location
 }
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
 New-AzResourceGroup -Name $resourceGroupName -Location $Region | Out-Null
-$tags =  @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'}
+$tags =  @{"Client"="Servian";"Owner"="santhosh.kumar@servian.com";"Purpose"="Training"}
 $resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
 New-AzTag -ResourceId $resourceGroup.ResourceId -tag $tags
 
