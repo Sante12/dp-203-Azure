@@ -128,7 +128,7 @@ $Region = $locations.Location
     }
 }
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
-New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{'Client'='Servian';'owner'='santhosh.kumar@servian.com';'Purpose'='Training'} | Out-Null
+New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{"Client"="Servian";"owner"="SANTHOSH.KUMAR@SERVIAN.COM";"Purpose"="Training"} | Out-Null
 $resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
 
 # Create Synapse workspace
