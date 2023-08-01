@@ -92,9 +92,9 @@ $locations = Get-AzLocation | Where-Object {
     $_.Providers -contains "Microsoft.Compute" -and
     $_.Location -in $preferred_list
 }
-$max_index = $locations.Count - 1
-$rand = (0..$max_index) | Get-Random
-$Region = $locations.Get($rand).Location
+# $max_index = $locations.Count - 1
+# $rand = (0..$max_index) | Get-Random
+$Region = $locations.Location
 
 # Test for subscription Azure SQL capacity constraints in randomly selected regions
 # (for some subsription types, quotas are adjusted dynamically based on capacity)
