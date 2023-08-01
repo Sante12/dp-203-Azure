@@ -117,8 +117,8 @@ $Region = $locations.Location
         $locations = $locations | Where-Object {$_.Location -notin $tried_list}
         if ($locations.Count -ne 1)
         {
-            $rand = (0..$($locations.Count - 1)) | Get-Random
-            $Region = $locations.Get($rand).Location
+            $rand = (0..$($locations.Count)) | Get-Random
+            $Region = $locations.Location
         }
         else {
             Write-Host "Couldn't find an available region for deployment."
