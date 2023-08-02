@@ -71,7 +71,7 @@ if ($args.count -gt 0 -And $args[0] -in $locations.Location)
     $Region = $args[0]
 }
 else {
-    $Region = $locations.Get($rand).Location
+    $Region = $locations.Location
 }
 
 # Try to create an Azure Databricks workspace in a region that has capacity
