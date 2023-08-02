@@ -83,7 +83,7 @@ $resourceGroupName = "dp203-$suffix"
 
 # Choose a random region
 Write-Host "Finding an available region. This may take several minutes...";
-$delay = 0, 30, 60, 90, 120 | Get-Random
+$delay = 0, 30| Get-Random
 Start-Sleep -Seconds $delay # random delay to stagger requests from multi-student classes
 $preferred_list = "australiaeast"
 $locations = Get-AzLocation | Where-Object {
@@ -128,7 +128,7 @@ $Region = $locations.Location
     }
 }
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
-New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{"Client"="Servian";"owner"="SANTHOSH.KUMAR@SERVIAN.COM";"Purpose"="Training"} | Out-Null
+New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'} | Out-Null
 $resourceGroup = Get-AzResourceGroup -Name $resourceGroupName
 
 # Create Synapse workspace
@@ -148,6 +148,7 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -sqlUser $sqlUser `
   -sqlPassword $sqlPassword `
   -Force
+  -Tag @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'}
 
 # Make the current user and the Synapse service principal owners of the data lake blob store
 write-host "Granting permissions on the $dataLakeAccountName storage account..."
