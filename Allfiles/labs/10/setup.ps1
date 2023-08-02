@@ -147,7 +147,7 @@ New-AzResourceGroupDeployment -ResourceGroupName $resourceGroupName `
   -sqlDatabaseName $sqlDatabaseName `
   -sqlUser $sqlUser `
   -sqlPassword $sqlPassword `
-  -Force
+  -Force `
   -Tag @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'}
 
 # Make the current user and the Synapse service principal owners of the data lake blob store
