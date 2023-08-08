@@ -52,16 +52,18 @@ Write-Host "Your randomly-generated suffix for Azure resources is $suffix"
 
 # Choose a region
 Write-Host "Preparing to deploy. This may take several minutes...";
-$delay = 0, 30, 60, 90, 120 | Get-Random
+$delay = 0, 30 | Get-Random
 Start-Sleep -Seconds $delay # random delay to stagger requests from multi-student classes
 
 # Get a list of locations for Azure Databricks
+$preferred_list = "australiaeast"
 $locations = Get-AzLocation | Where-Object {
     $_.Providers -contains "Microsoft.Databricks" -and
-    $_.Providers -contains "Microsoft.Compute"
+    $_.Providers -contains "Microsoft.Compute" -and
+    $_.Location -in $preferred_list
 }
-$max_index = $locations.Count - 1
-$rand = (0..$max_index) | Get-Random
+# $max_index = $locations.Count - 1
+# $rand = (0..$max_index) | Get-Random
 
 # Start with preferred region if specified, otherwise choose one at random
 if ($args.count -gt 0 -And $args[0] -in $locations.Location)
@@ -69,7 +71,7 @@ if ($args.count -gt 0 -And $args[0] -in $locations.Location)
     $Region = $args[0]
 }
 else {
-    $Region = $locations.Get($rand).Location
+    $Region = $locations.Location
 }
 
 # Try to create an Azure Databricks workspace in a region that has capacity
@@ -105,8 +107,8 @@ while ($stop -ne 1){
         $tried_regions.Add($Region)
         $locations = $locations | Where-Object {$_.Location -notin $tried_regions}
         if ($locations.Count -ne 1){
-            $rand = (0..$($locations.Count - 1)) | Get-Random
-            $Region = $locations.Get($rand).Location
+            $rand = (0..$($locations.Count )) | Get-Random
+            $Region = $locations.Location
             $stop = 0
         }
         else {
@@ -118,7 +120,7 @@ while ($stop -ne 1){
     else {
         $resourceGroupName = "dp203-$suffix"
         Write-Host "Creating $resourceGroupName resource group ..."
-        New-AzResourceGroup -Name $resourceGroupName -Location $Region | Out-Null
+        New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'}| Out-Null
         $dbworkspace = "databricks$suffix"
         Write-Host "Creating $dbworkspace Azure Databricks workspace in $resourceGroupName resource group..."
         New-AzDatabricksWorkspace -Name $dbworkspace -ResourceGroupName $resourceGroupName -Location $Region -Sku standard | Out-Null
