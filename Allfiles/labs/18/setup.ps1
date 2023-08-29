@@ -83,9 +83,9 @@ $resourceGroupName = "dp203-$suffix"
 
 # Choose a random region
 Write-Host "Finding an available region. This may take several minutes...";
-$delay = 0, 30, 60, 90, 120 | Get-Random
+$delay = 0, 30 | Get-Random
 Start-Sleep -Seconds $delay # random delay to stagger requests from multi-student classes
-$preferred_list = "australiaeast","centralus","southcentralus","eastus2","northeurope","southeastasia","uksouth","westeurope","westus","westus2"
+$preferred_list = "australiaeast"
 $locations = Get-AzLocation | Where-Object {
     $_.Providers -contains "Microsoft.Synapse" -and
     $_.Providers -contains "Microsoft.Sql" -and
@@ -95,7 +95,7 @@ $locations = Get-AzLocation | Where-Object {
     $_.Providers -contains "Microsoft.StreamAnalytics" -and
     $_.Location -in $preferred_list
 }
-$max_index = $locations.Count - 1
+$max_index = $locations.Count
 # Start with preferred region if specified, otherwise choose one at random
 if ($args.count -gt 0 -And $args[0] -in $locations.Location)
 {
@@ -103,7 +103,7 @@ if ($args.count -gt 0 -And $args[0] -in $locations.Location)
 }
 else {
     $rand = (0..$max_index) | Get-Random
-    $Region = $locations.Get($rand).Location
+    $Region = $locations.Location
 }
 
 # Test for subscription Azure SQL capacity constraints in randomly selected regions
@@ -137,7 +137,7 @@ else {
     }
 }
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
-New-AzResourceGroup -Name $resourceGroupName -Location $Region | Out-Null
+New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'} | Out-Null
 
 # Create Synapse workspace
 $synapseWorkspace = "synapse$suffix"
