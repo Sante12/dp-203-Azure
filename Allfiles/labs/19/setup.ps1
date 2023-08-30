@@ -53,11 +53,13 @@ Write-Host "Your randomly-generated suffix for Azure resources is $suffix"
 $resourceGroupName = "dp203-$suffix"
 
 # Choose a random region
+$preferred_list = "australiaeast"
 $locations = Get-AzLocation | Where-Object {
     $_.Providers -contains "Microsoft.EventHub" -and
-    $_.Providers -contains "Microsoft.StreamAnalytics"
+    $_.Providers -contains "Microsoft.StreamAnalytics" -and
+    $_.Location -in $preferred_list
 }
-$max_index = $locations.Count - 1
+$max_index = $locations.Count
 # Start with preferred region if specified, otherwise choose one at random
 if ($args.count -gt 0 -And $args[0] -in $locations.Location)
 {
@@ -65,11 +67,11 @@ if ($args.count -gt 0 -And $args[0] -in $locations.Location)
 }
 else {
     $rand = (0..$max_index) | Get-Random
-    $Region = $locations.Get($rand).Location
+    $Region = $locations.Location
 }
 
 Write-Host "Creating $resourceGroupName resource group in $Region ..."
-New-AzResourceGroup -Name $resourceGroupName -Location $Region | Out-Null
+New-AzResourceGroup -Name $resourceGroupName -Location $Region -Tag @{'Client'='Servian';'Owner'='santhosh.kumar@servian.com';'Purpose'='Training'} | Out-Null
 
 # Create Azure resources
 $eventNsName = "events$suffix"
